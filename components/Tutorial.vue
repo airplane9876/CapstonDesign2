@@ -21,76 +21,83 @@
       </ul>
     </div>
 
-    <div
-      v-if="isCameraOpen"
-      v-show="!isLoading"
-      class="camera-box"
-      :class="{ flash: isShotPhoto }"
-    >
-      <div class="camera-shutter" :class="{ flash: isShotPhoto }"></div>
-
+    <div v-if="isCameraOpen" v-show="!isLoading" class="camera-box">
       <video
-        v-show="!isPhotoTaken"
+        id="myvideo"
         ref="camera"
-        :width="450"
-        :height="337.5"
+        :width="256"
+        :height="187"
         autoplay
       ></video>
-
-      <canvas
-        v-show="isPhotoTaken"
-        id="photoTaken"
-        ref="canvas"
-        :width="450"
-        :height="337.5"
-      ></canvas>
     </div>
 
     <div v-if="isCameraOpen && !isLoading" class="camera-shoot">
-      <button type="button" class="button" @click="takePhoto">
+      <button type="button" class="button" @click="captureImage">
         <img
           src="https://img.icons8.com/material-outlined/50/000000/camera--v2.png"
         />
       </button>
     </div>
 
-    <div v-if="isPhotoTaken && isCameraOpen" class="camera-download">
-      <a
-        id="downloadPhoto"
-        download="my-photo.jpg"
-        class="button"
-        role="button"
-        @click="downloadImage"
-      >
-        Download
-      </a>
+    <div v-if="isCameraOpen">
+      <img
+        id="my-screenshot"
+        class="camera-box"
+        style="width: 256px; height: 187px"
+      />
     </div>
+
+    <div v-if="isCameraOpen">
+      <img
+        id="receive-screenshot"
+        class="camera-box"
+        style="width: 256px; height: 187px"
+      />
+    </div>
+    <!-- <textarea
+      v-model="sendResult"
+      placeholder="[chatMessages] Formatted messages will appear here"
+      rows="3"
+      max-rows="6"
+    ></textarea> -->
   </div>
 </template>
 
 <script>
+import captureVideoFrame from 'capture-video-frame'
+
 export default {
   name: 'NuxtTutorial',
   data() {
     return {
       isCameraOpen: false,
-      isPhotoTaken: false,
-      isShotPhoto: false,
+      isCaptureStart: false,
       isLoading: false,
       link: '#',
+      interverId: '',
+      frame: '',
+      sendResult: '',
+      receiveResult: '',
     }
+  },
+
+  mounted() {
+    this.socket = this.$nuxtSocket({
+      channel: '/image',
+      reconnection: false,
+    })
   },
 
   methods: {
     async toggleCamera() {
-      const res = await this.$axios.get(`/api/image`)
-      this.$store.commit('SET_MESSAGE', 'blabla')
+      // const res = await this.$axios.get(`/api/image`)
+      // this.$store.commit('SET_MESSAGE', 'blabla')
+      // // this.$store.dispatch('FORMAT_MESSAGE', 'blabla')
 
-      console.log(this.$store.state.chatMessages) // -> 1
+      // console.log(this.$store.state.chatMessages) // -> 1
       if (this.isCameraOpen) {
         this.isCameraOpen = false
-        this.isPhotoTaken = false
-        this.isShotPhoto = false
+        this.isCaptureStart = false
         this.stopCameraStream()
       } else {
         this.isCameraOpen = true
@@ -126,30 +133,31 @@ export default {
       })
     },
 
-    takePhoto() {
-      if (!this.isPhotoTaken) {
-        this.isShotPhoto = true
-
-        const FLASH_TIMEOUT = 50
-
-        setTimeout(() => {
-          this.isShotPhoto = false
-        }, FLASH_TIMEOUT)
+    captureImage() {
+      if (this.isCaptureStart == false) {
+        console.log('setInterval start')
+        const setInterval = window.setInterval
+        this.interverId = setInterval(this.sendImage, 100)
+      } else {
+        clearInterval(this.interverId)
+        console.log('here?')
       }
-
-      this.isPhotoTaken = !this.isPhotoTaken
-
-      const context = this.$refs.canvas.getContext('2d')
-      context.drawImage(this.$refs.camera, 0, 0, 450, 337.5)
+      this.isCaptureStart = !this.isCaptureStart
     },
 
-    downloadImage() {
-      const download = document.getElementById('downloadPhoto')
-      const canvas = document
-        .getElementById('photoTaken')
-        .toDataURL('image/jpeg')
-        .replace('image/jpeg', 'image/octet-stream')
-      download.setAttribute('href', canvas)
+    async sendImage() {
+      const frame = captureVideoFrame('myvideo', 'png')
+      const img = document.getElementById('my-screenshot')
+      img.setAttribute('src', frame.dataUri)
+      this.frame = frame.dataUri
+      this.imageToServer()
+
+      const img2 = document.getElementById('receive-screenshot')
+      img2.setAttribute('src', this.receiveResult)
+    },
+
+    imageToServer() {
+      this.socket.emit('imageToServer')
     },
   },
 }
