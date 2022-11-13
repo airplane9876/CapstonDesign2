@@ -37,8 +37,27 @@ export default {
   modules: [
     // https://go.nuxtjs.dev/axios
     '@nuxtjs/axios',
+    'nuxt-socket-io',
   ],
-
+  io: {
+    // Options
+    sockets: [
+      {
+        name: 'home',
+        default: true,
+        vuex: {
+          // actions: [{ chatMessage: 'FORMAT_MESSAGE' }],
+          // emitBacks: ['chatMessages']
+        },
+        namespaces: {
+          '/image': {
+            emitters: ['imageToServer + frame --> sendResult'],
+            listeners: ['receiveResult']
+          },
+        }
+      }
+    ]
+  },
   // Axios module configuration: https://go.nuxtjs.dev/config-axios
   axios: {
     // Workaround to avoid enforcing hard-coded localhost:3000: https://github.com/nuxt-community/axios-module/issues/308
