@@ -1,65 +1,78 @@
 <!-- Please remove this file from your project -->
 <template>
   <div id="app" class="web-camera-container">
-    <div class="camera-button">
-      <button
-        type="button"
-        class="button is-rounded"
-        :class="{ 'is-primary': !isCameraOpen, 'is-danger': isCameraOpen }"
-        @click="toggleCamera"
-      >
-        <span v-if="!isCameraOpen">Open Camera</span>
-        <span v-else>Close Camera</span>
-      </button>
-    </div>
+    <div class="web-camera">
+      <div class="camera-button">
+        <button
+          type="button"
+          class="button is-rounded"
+          :class="{ 'is-primary': !isCameraOpen, 'is-danger': isCameraOpen }"
+          @click="toggleCamera"
+        >
+          <span v-if="!isCameraOpen">Open Camera</span>
+          <span v-else>Close Camera</span>
+        </button>
+      </div>
 
-    <div v-show="isCameraOpen && isLoading" class="camera-loading">
-      <ul class="loader-circle">
-        <li></li>
-        <li></li>
-        <li></li>
-      </ul>
-    </div>
+      <div v-show="isCameraOpen && isLoading" class="camera-loading">
+        <ul class="loader-circle">
+          <li></li>
+          <li></li>
+          <li></li>
+        </ul>
+      </div>
 
-    <div v-if="isCameraOpen" v-show="!isLoading" class="camera-box">
-      <video
-        id="myvideo"
-        ref="camera"
-        :width="256"
-        :height="187"
-        autoplay
-      ></video>
-    </div>
+      <div v-if="isCameraOpen" v-show="!isLoading" class="camera-box">
+        <video
+          id="myvideo"
+          ref="camera"
+          :width="256"
+          :height="187"
+          autoplay
+        ></video>
+      </div>
 
-    <div v-if="isCameraOpen && !isLoading" class="camera-shoot">
-      <button type="button" class="button" @click="captureImage">
+      <div v-if="isCameraOpen && !isLoading" class="camera-shoot">
+        <button type="button" class="button" @click="captureImage">
+          <img
+            src="https://img.icons8.com/material-outlined/50/000000/camera--v2.png"
+          />
+        </button>
+      </div>
+
+      <!-- <div v-if="isCameraOpen">
         <img
-          src="https://img.icons8.com/material-outlined/50/000000/camera--v2.png"
+          id="my-screenshot"
+          class="camera-box"
+          style="width: 256px; height: 187px"
         />
-      </button>
+      </div> -->
     </div>
-
-    <div v-if="isCameraOpen">
-      <img
-        id="my-screenshot"
-        class="camera-box"
-        style="width: 256px; height: 187px"
-      />
+    <div class="result-view">
+      <div class="danger-range">
+        <div class="danger-number">
+          <p
+            :class="{
+              'danger-number-black': dangerNumberClass == 'black',
+              'danger-number-orangered': dangerNumberClass == 'orangered',
+              'danger-number-red': dangerNumberClass == 'red',
+            }"
+          >
+            {{ receiveResult }}
+          </p>
+          <!-- <p>29</p> -->
+        </div>
+        <div class="danger-graph">
+          <b-progress
+            style="width: 100%"
+            :value="receiveResult"
+            :variant="variant"
+            class="mb-3"
+          ></b-progress>
+        </div>
+      </div>
+      <div class="detect-object"></div>
     </div>
-
-    <div v-if="isCameraOpen">
-      <img
-        id="receive-screenshot"
-        class="camera-box"
-        style="width: 256px; height: 187px"
-      />
-    </div>
-    <!-- <textarea
-      v-model="sendResult"
-      placeholder="[chatMessages] Formatted messages will appear here"
-      rows="3"
-      max-rows="6"
-    ></textarea> -->
   </div>
 </template>
 
@@ -77,8 +90,31 @@ export default {
       interverId: '',
       frame: '',
       sendResult: '',
-      receiveResult: '',
+      receiveImg: '',
+      receiveResult: 0,
+      // dangerNumberClass: 'black',
     }
+  },
+
+  computed: {
+    dangerNumberClass() {
+      if (this.receiveResult < 50) return 'black'
+      if (this.receiveResult < 80) return 'orangered'
+      return 'red'
+    },
+    variant() {
+      if (this.receiveResult < 50) return 'success'
+      if (this.receiveResult < 80) return 'warning'
+      return 'danger'
+    },
+  },
+
+  watch: {
+    receiveResult: function (val) {
+      console.log(this.receiveResult)
+      // const img2 = document.getElementById('receive-screenshot')
+      // img2.setAttribute('src', this.receiveResult)
+    },
   },
 
   mounted() {
@@ -137,23 +173,19 @@ export default {
       if (this.isCaptureStart == false) {
         console.log('setInterval start')
         const setInterval = window.setInterval
-        this.interverId = setInterval(this.sendImage, 100)
+        this.interverId = setInterval(this.sendImage, 500)
       } else {
         clearInterval(this.interverId)
-        console.log('here?')
       }
       this.isCaptureStart = !this.isCaptureStart
     },
 
     async sendImage() {
       const frame = captureVideoFrame('myvideo', 'png')
-      const img = document.getElementById('my-screenshot')
-      img.setAttribute('src', frame.dataUri)
+      // const img = document.getElementById('my-screenshot')
+      // img.setAttribute('src', frame.dataUri)
       this.frame = frame.dataUri
       this.imageToServer()
-
-      const img2 = document.getElementById('receive-screenshot')
-      img2.setAttribute('src', this.receiveResult)
     },
 
     imageToServer() {
@@ -174,33 +206,44 @@ body {
   margin-bottom: 2rem;
   padding: 2rem;
   display: flex;
-  flex-direction: column;
-  justify-content: center;
+  justify-content: space-around;
   align-items: center;
   border: 1px solid #ccc;
   border-radius: 4px;
-  width: 500px;
+  width: 80vw;
+  height: 80vh;
 }
 
-.web-camera-container .camera-button {
+.web-camera-container .web-camera {
+  width: 40%;
+  margin-top: 2rem;
+  margin-bottom: 2rem;
+  padding: 2rem;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+}
+
+.web-camera-container .web-camera .camera-button {
   margin-bottom: 2rem;
 }
 
-.web-camera-container .camera-box .camera-shutter {
+.web-camera-container .web-camera .camera-box .camera-shutter {
   opacity: 0;
   width: 450px;
   height: 337.5px;
   background-color: #fff;
   position: absolute;
 }
-.web-camera-container .camera-box .flash {
+.web-camera-container .web-camera .camera-box .flash {
   opacity: 1;
 }
 
-.web-camera-container .camera-shoot {
+.web-camera-container .web-camera .camera-shoot {
   margin: 1rem 0;
 }
-.web-camera-container .camera-shoot button {
+.web-camera-container .web-camera .camera-shoot button {
   height: 60px;
   width: 60px;
   display: flex;
@@ -209,12 +252,12 @@ body {
   border-radius: 100%;
 }
 
-.web-camera-container .camera-shoot button img {
+.web-camera-container .web-camera .camera-shoot button img {
   height: 35px;
   object-fit: cover;
 }
 
-.web-camera-container .camera-loading {
+.web-camera-container .web-camera .camera-loading {
   overflow: hidden;
   height: 100%;
   position: absolute;
@@ -222,7 +265,7 @@ body {
   min-height: 150px;
   margin: 3rem 0 0 -1.2rem;
 }
-.web-camera-container .camera-loading ul {
+.web-camera-container .web-camera .camera-loading ul {
   height: 100%;
   position: absolute;
   width: 100%;
@@ -230,7 +273,7 @@ body {
   margin: 0;
 }
 
-.web-camera-container .camera-loading .loader-circle {
+.web-camera-container .web-camera .camera-loading .loader-circle {
   display: block;
   height: 14px;
   margin: 0 auto;
@@ -242,7 +285,7 @@ body {
   width: 100%;
   padding: 0;
 }
-.web-camera-container .camera-loading .loader-circle li {
+.web-camera-container .web-camera .camera-loading .loader-circle li {
   display: block;
   float: left;
   width: 10px;
@@ -256,12 +299,80 @@ body {
   top: -50%;
   border-radius: 100%;
 }
-.web-camera-container .camera-loading .loader-circle li:nth-child(2) {
+/* .web-camera-container
+  .web-camera
+  .camera-loading
+  .loader-circle
+  li:nth-child(2) {
   animation-delay: 0.2s;
 }
 
-.web-camera-container .camera-loading .loader-circle li:nth-child(3) {
+.web-camera-container
+  .web-camera
+  .camera-loading
+  .loader-circle
+  li:nth-child(3) {
   animation-delay: 0.4s;
+} */
+
+.web-camera-container .result-view {
+  width: 40%;
+  height: 80%;
+  margin-top: 2rem;
+  margin-bottom: 2rem;
+  padding: 2rem;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+}
+
+.web-camera-container .result-view .danger-range {
+  width: 100%;
+  height: 50%;
+  margin-top: 2rem;
+  margin-bottom: 2rem;
+  padding: 2rem;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+}
+
+.danger-number {
+  width: 100%;
+  height: 50%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.danger-number p {
+  font-size: 40px;
+  font-weight: bold;
+}
+
+.danger-number-black {
+  color: black;
+}
+
+.danger-number-orangered {
+  color: orange;
+}
+
+.danger-number-red {
+  color: red;
+  font-size: 50px !important;
+}
+
+.danger-graph {
+  display: flex;
+  height: 50%;
+  width: 100%;
+  overflow: hidden;
+  justify-content: center;
+  align-items: center;
+  align-content: center;
 }
 
 @keyframes preload {

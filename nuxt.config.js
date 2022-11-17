@@ -35,6 +35,7 @@ export default {
 
   // Modules: https://go.nuxtjs.dev/config-modules
   modules: [
+    'bootstrap-vue/nuxt',
     // https://go.nuxtjs.dev/axios
     '@nuxtjs/axios',
     'nuxt-socket-io',
@@ -52,7 +53,7 @@ export default {
         namespaces: {
           '/image': {
             emitters: ['imageToServer + frame --> sendResult'],
-            listeners: ['receiveResult']
+            listeners: ['receiveResult', 'receiveImg']
           },
         }
       }
