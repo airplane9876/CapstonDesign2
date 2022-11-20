@@ -58,14 +58,14 @@
               'danger-number-red': dangerNumberClass == 'red',
             }"
           >
-            {{ receiveResult }}
+            {{ dangerNumber }}
           </p>
           <!-- <p>29</p> -->
         </div>
         <div class="danger-graph">
           <b-progress
             style="width: 100%"
-            :value="receiveResult"
+            :value="dangerNumber"
             :variant="variant"
             class="mb-3"
           ></b-progress>
@@ -91,31 +91,28 @@ export default {
       frame: '',
       sendResult: '',
       receiveImg: '',
-      receiveResult: 0,
-      // dangerNumberClass: 'black',
+      dangerNumber: 0,
     }
   },
 
   computed: {
     dangerNumberClass() {
-      if (this.receiveResult < 50) return 'black'
-      if (this.receiveResult < 80) return 'orangered'
+      if (this.dangerNumber < 50) return 'black'
+      if (this.dangerNumber < 80) return 'orangered'
       return 'red'
     },
     variant() {
-      if (this.receiveResult < 50) return 'success'
-      if (this.receiveResult < 80) return 'warning'
+      if (this.dangerNumber < 50) return 'success'
+      if (this.dangerNumber < 80) return 'warning'
       return 'danger'
     },
   },
 
-  watch: {
-    receiveResult: function (val) {
-      console.log(this.receiveResult)
-      // const img2 = document.getElementById('receive-screenshot')
-      // img2.setAttribute('src', this.receiveResult)
-    },
-  },
+  // watch: {
+  //   dangerNumber: function (val) {
+  //     console.log(this.dangerNumber)
+  //   },
+  // },
 
   mounted() {
     this.socket = this.$nuxtSocket({

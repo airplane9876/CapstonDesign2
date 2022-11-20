@@ -16,7 +16,7 @@ export default function Svc(socket, io) {
             child.stdin.end();
 
             child.stdout.on('data', result => {
-                socket.emit('receiveResult', result.toString())
+                socket.emit('dangerNumber', result.toString())
             });
 
             child.stderr.on('data', function (result) {
