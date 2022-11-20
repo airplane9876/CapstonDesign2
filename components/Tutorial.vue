@@ -72,7 +72,7 @@
         </div>
       </div>
       <div class="object-detect">
-        <transition-group class="object-detect" name="list" tag="p">
+        <transition-group class="object-detect" name="list">
           <b-card
             v-for="object in objectList"
             :key="object.class"
@@ -212,7 +212,7 @@ export default {
       if (this.isCaptureStart == false) {
         console.log('setInterval start')
         const setInterval = window.setInterval
-        this.interverId = setInterval(this.sendImage, 1000)
+        this.interverId = setInterval(this.sendImage, 100)
       } else {
         clearInterval(this.interverId)
       }
@@ -424,23 +424,19 @@ body {
 .object-detect-card {
   margin: 5px;
   width: 100%;
-  /* transition: all 1s; */
+  transition: all 0.5s;
   display: inline-block;
-  /* margin-right: 10px; */
 }
 
-.list-enter-active {
-  transition: all 1s;
-}
-.list-enter {
+.list-enter
+/* .list-complete-leave-active below version 2.1.8 */ {
   opacity: 0;
   transform: translateY(-30px);
 }
-
-/* .list-complete-leave-to {
-  opacity: 0;
-  transform: translateY(-30px);
-} */
+.list-leave-active {
+  position: absolute;
+  display: none;
+}
 
 @keyframes preload {
   0% {
