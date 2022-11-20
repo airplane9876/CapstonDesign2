@@ -71,7 +71,22 @@
           ></b-progress>
         </div>
       </div>
-      <div class="detect-object"></div>
+      <div class="object-detect">
+        <transition-group class="object-detect" name="list" tag="p">
+          <b-card
+            v-for="object in objectList"
+            :key="object.class"
+            class="object-detect-card"
+            :border-variant="object.header"
+            :header="object.header"
+            :header-bg-variant="object.header"
+            header-text-variant="white"
+            align="center"
+          >
+            <b-card-text>{{ object.class }}</b-card-text>
+          </b-card>
+        </transition-group>
+      </div>
     </div>
   </div>
 </template>
@@ -92,6 +107,11 @@ export default {
       sendResult: '',
       receiveImg: '',
       dangerNumber: 0,
+      detectObject: [],
+      objectList: [
+        // { header: 'warning', class: '노인보호' },
+        // { header: 'danger', class: '빨간신호등' },
+      ],
     }
   },
 
@@ -108,11 +128,33 @@ export default {
     },
   },
 
-  // watch: {
-  //   dangerNumber: function (val) {
-  //     console.log(this.dangerNumber)
-  //   },
-  // },
+  watch: {
+    // dangerNumber: function (val) {
+    //   console.log(this.dangerNumber)
+    // },
+    detectObject: function (val) {
+      if (val.length > 0) {
+        // 이미 인식된 중복 요소 제거
+        val = val.filter((x) => {
+          for (const i of this.objectList) {
+            if (x.class == i.class) {
+              return false
+            }
+          }
+          return true
+        })
+
+        // val의 내용을 tts로 출력해야함
+
+        // 화면에 보여줄 내용 최신화
+        // const temp = [...val, ...this.objectList]
+        // this.objectList = temp.slice(0, 3)
+
+        this.objectList.splice(3 - val.length, val.length)
+        this.objectList.splice(0, 0, ...val.slice(0, 3))
+      }
+    },
+  },
 
   mounted() {
     this.socket = this.$nuxtSocket({
@@ -170,7 +212,7 @@ export default {
       if (this.isCaptureStart == false) {
         console.log('setInterval start')
         const setInterval = window.setInterval
-        this.interverId = setInterval(this.sendImage, 500)
+        this.interverId = setInterval(this.sendImage, 1000)
       } else {
         clearInterval(this.interverId)
       }
@@ -207,8 +249,8 @@ body {
   align-items: center;
   border: 1px solid #ccc;
   border-radius: 4px;
-  width: 80vw;
-  height: 80vh;
+  width: 95vw;
+  height: 90vh;
 }
 
 .web-camera-container .web-camera {
@@ -313,11 +355,9 @@ body {
 } */
 
 .web-camera-container .result-view {
-  width: 40%;
-  height: 80%;
-  margin-top: 2rem;
-  margin-bottom: 2rem;
-  padding: 2rem;
+  width: 50%;
+  height: 100%;
+  padding: 2px;
   display: flex;
   flex-direction: column;
   justify-content: center;
@@ -326,10 +366,19 @@ body {
 
 .web-camera-container .result-view .danger-range {
   width: 100%;
-  height: 50%;
+  height: 25%;
+  padding: 2px;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+}
+
+.web-camera-container .result-view .object-detect {
+  width: 100%;
+  height: 70%;
   margin-top: 2rem;
-  margin-bottom: 2rem;
-  padding: 2rem;
+  padding: 2px;
   display: flex;
   flex-direction: column;
   justify-content: center;
@@ -371,6 +420,27 @@ body {
   align-items: center;
   align-content: center;
 }
+
+.object-detect-card {
+  margin: 5px;
+  width: 100%;
+  /* transition: all 1s; */
+  display: inline-block;
+  /* margin-right: 10px; */
+}
+
+.list-enter-active {
+  transition: all 1s;
+}
+.list-enter {
+  opacity: 0;
+  transform: translateY(-30px);
+}
+
+/* .list-complete-leave-to {
+  opacity: 0;
+  transform: translateY(-30px);
+} */
 
 @keyframes preload {
   0% {

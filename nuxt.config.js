@@ -53,7 +53,7 @@ export default {
         namespaces: {
           '/image': {
             emitters: ['imageToServer + frame --> sendResult'],
-            listeners: ['dangerNumber', 'receiveImg']
+            listeners: ['dangerNumber', 'receiveImg', 'detectObject']
           },
         }
       }
