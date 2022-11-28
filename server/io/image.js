@@ -20,17 +20,17 @@ export default function Svc(socket, io) {
 
                 // 이미지 검출 테스트용 코드
                 const detectObject = [];
-                if (Number(result.toString()) >= 50 && Number(result.toString()) >= 60) {
-                    detectObject.push({ header: 'warning', class: '어린이보호' })
+                if (Number(result.toString()) >= 50 && Number(result.toString()) <= 60) {
+                    detectObject.push({ header: 'warning', class: '어린이보호', classNum: 3 })
                 }
-                if (Number(result.toString()) >= 55 && Number(result.toString()) >= 65) {
-                    detectObject.push({ header: 'danger', class: 'Red Light' })
+                if (Number(result.toString()) >= 55 && Number(result.toString()) <= 65) {
+                    detectObject.push({ header: 'danger', class: 'Red Light', classNum: 2 })
                 }
-                if (Number(result.toString()) >= 20 && Number(result.toString()) >= 30) {
-                    detectObject.push({ header: 'warning', class: '유턴 금지' })
+                if (Number(result.toString()) >= 20 && Number(result.toString()) <= 30) {
+                    detectObject.push({ header: 'danger', class: '유턴 금지', classNum: 1 })
                 }
-                if (Number(result.toString()) >= 20 && Number(result.toString()) >= 30) {
-                    detectObject.push({ header: 'warning', class: 'Yello Light' })
+                if (Number(result.toString()) >= 20 && Number(result.toString()) <= 30) {
+                    detectObject.push({ header: 'warning', class: 'Yello Light', classNum: 0 })
                 }
                 socket.emit('detectObject', detectObject)
             });
