@@ -3,9 +3,9 @@ import random
 
 D = [
     { 'header': 'warning', 'class': '어린이보호', 'classNum': 3}, 
-    # { header: 'danger', class: 'Red Light', classNum: 2 }, 
-    # { header: 'danger', class: '유턴 금지', classNum: 1 }, 
-    # { header: 'warning', class: 'Yello Light', classNum: 0 }, 
+    { 'header': 'danger', 'class': 'Red Light', 'classNum': 2 }, 
+    { 'header': 'danger', 'class': '유턴 금지', 'classNum': 1 }, 
+    { 'header': 'warning', 'class': 'Yello Light', 'classNum': 0 }, 
 ]
 
 def functionTest(img):

@@ -39,11 +39,6 @@ export default function Svc(socket, io) {
                 console.log('error');
             });
 
-            // danger.on('close', (code) => {
-            //     console.log(`danger process exited with code ${code}`)
-            // })
-
-            // socket.emit('receiveImg', data)
         },
         echoBack({ evt, data }) {
             socket.emit(evt, data)

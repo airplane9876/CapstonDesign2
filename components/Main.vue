@@ -100,15 +100,14 @@ export default {
     return {
       audio: null,
       audioPlayTime: 0,
-      frameRate: 1, // 전송할 프레임
+      frameRate: 1, // 전송할
       isCameraOpen: false,
       isCaptureStart: false,
       isLoading: false,
       link: '#',
-      interverId: ['', ''],
+      interverId: '',
       frame: '',
       sendResult: '',
-      sendObjectResult: '',
       receiveImg: '',
       dangerNumber: 0,
       detectObject: [],
@@ -222,22 +221,14 @@ export default {
       if (this.isCaptureStart == false) {
         console.log('setInterval start')
         const setInterval = window.setInterval
-        this.interverId[0] = setInterval(
-          this.sendImageToDanger,
-          1000 / this.frameRate
-        )
-        this.interverId[1] = setInterval(
-          this.imageToObjectDetection,
-          1000 / this.frameRate
-        )
+        this.interverId = setInterval(this.sendImage, 1000 / this.frameRate)
       } else {
-        clearInterval(this.interverId[0])
-        clearInterval(this.interverId[1])
+        clearInterval(this.interverId)
       }
       this.isCaptureStart = !this.isCaptureStart
     },
 
-    async sendImageToDanger() {
+    async sendImage() {
       const frame = captureVideoFrame('myvideo', 'png')
       // const img = document.getElementById('my-screenshot')
       // img.setAttribute('src', frame.dataUri)
@@ -251,10 +242,6 @@ export default {
 
     imageToServer() {
       this.socket.emit('imageToServer')
-    },
-
-    imageToObjectDetection() {
-      this.socket.emit('imageToObjectDetection')
     },
   },
 }
