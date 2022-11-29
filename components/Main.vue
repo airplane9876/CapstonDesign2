@@ -98,6 +98,9 @@ export default {
   name: 'NuxtTutorial',
   data() {
     return {
+      audio: null,
+      audioPlayTime: 0,
+      frameRate: 10, // 전송할 프레임
       isCameraOpen: false,
       isCaptureStart: false,
       isLoading: false,
@@ -108,9 +111,13 @@ export default {
       receiveImg: '',
       dangerNumber: 0,
       detectObject: [],
-      objectList: [
-        // { header: 'warning', class: '노인보호' },
-        // { header: 'danger', class: '빨간신호등' },
+      detectObjectTimeout: [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+      objectList: [],
+      allObject: [
+        { header: 'warning', class: '노인보호', classNum: 0 },
+        { header: 'danger', class: '빨간신호등', classNum: 1 },
+        { header: 'danger', class: '30km제한구역', classNum: 2 },
+        { header: 'warning', class: '유턴금지', classNum: 3 },
       ],
     }
   },
@@ -129,30 +136,55 @@ export default {
   },
 
   watch: {
-    // dangerNumber: function (val) {
-    //   console.log(this.dangerNumber)
-    // },
     detectObject: function (val) {
+      val = JSON.parse(val)
       if (val.length > 0) {
         // 이미 인식된 중복 요소 제거
-        val = val.filter((x) => {
-          for (const i of this.objectList) {
-            if (x.class == i.class) {
-              return false
-            }
+        val = val.filter((x) => this.detectObjectTimeout[x.classNum] == 0)
+
+        // 현재 인식한 객체 5초간 재인식 금지
+        for (const i of val) {
+          this.detectObjectTimeout[i.classNum] = 5 * this.frameRate
+        }
+
+        // val을 class가 담긴 객체로 변환
+        val = this.allObject.filter((x) => {
+          for (const i of val) {
+            if (x.classNum == i.classNum) return true
+          }
+          return false
+        })
+
+        // 만약 인식목록에 지금 새로 인식한 object가 있다면, 제거
+        this.objectList = this.objectList.filter((x) => {
+          for (const i of val) {
+            if (x.classNum == i.classNum) return false
           }
           return true
         })
 
-        // val의 내용을 tts로 출력해야함
-
-        // 화면에 보여줄 내용 최신화
-        // const temp = [...val, ...this.objectList]
-        // this.objectList = temp.slice(0, 3)
-
+        // 현재 새로 탐지한 val을 화면에 보여줄 objectList에 추가
         this.objectList.splice(3 - val.length, val.length)
         this.objectList.splice(0, 0, ...val.slice(0, 3))
+
+        // 새로 인식된 객체들 음성으로 정보 출력
+        for (const i of val.slice(0, 3)) {
+          if (i.header == 'danger' && !this.audio) {
+            if (i.class == '빨간신호등') {
+              this.audio = new Audio(require('../static/sounds/test.mp3'))
+              this.audio.play()
+              this.audio.addEventListener('ended', () => (this.audio = null))
+            } else {
+              this.audio = new Audio(require('../static/sounds/test2.mp3'))
+              this.audio.play()
+              this.audio.addEventListener('ended', () => (this.audio = null))
+            }
+          }
+        }
       }
+    },
+    audio: function (val) {
+      console.log(val)
     },
   },
 
@@ -212,7 +244,7 @@ export default {
       if (this.isCaptureStart == false) {
         console.log('setInterval start')
         const setInterval = window.setInterval
-        this.interverId = setInterval(this.sendImage, 100)
+        this.interverId = setInterval(this.sendImage, 1000 / this.frameRate)
       } else {
         clearInterval(this.interverId)
       }
@@ -225,6 +257,10 @@ export default {
       // img.setAttribute('src', frame.dataUri)
       this.frame = frame.dataUri
       this.imageToServer()
+
+      for (const i in this.detectObjectTimeout) {
+        if (this.detectObjectTimeout[i] > 0) this.detectObjectTimeout[i] -= 1
+      }
     },
 
     imageToServer() {
