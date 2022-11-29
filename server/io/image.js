@@ -6,7 +6,8 @@ export default function Svc(socket, io) {
             // 모델로 쏘고
             // 결과 받아서
             const { spawn } = require('node:child_process');
-            const danger = spawn('python', ['python/a.py']);
+
+            const danger = spawn('python', ['python/capdi.py']);
             danger.stdin.setEncoding('utf-8');
             danger.stdout.pipe(process.stdout);
             danger.stdin.write(data);
@@ -17,7 +18,7 @@ export default function Svc(socket, io) {
             });
 
             danger.stderr.on('data', function (result) {
-                console.log('error');
+                console.log(result.toString());
             });
 
             const objectDetect = spawn('python', ['python/b.py']);

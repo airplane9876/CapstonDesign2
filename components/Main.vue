@@ -100,7 +100,7 @@ export default {
     return {
       audio: null,
       audioPlayTime: 0,
-      frameRate: 10, // 전송할 프레임
+      frameRate: 0.5, // 전송할 프레임
       isCameraOpen: false,
       isCaptureStart: false,
       isLoading: false,
@@ -255,7 +255,8 @@ export default {
       const frame = captureVideoFrame('myvideo', 'png')
       // const img = document.getElementById('my-screenshot')
       // img.setAttribute('src', frame.dataUri)
-      this.frame = frame.dataUri
+      this.frame = frame.dataUri.split(',')[1]
+      console.log(this.frame)
       this.imageToServer()
 
       for (const i in this.detectObjectTimeout) {
