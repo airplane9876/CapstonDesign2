@@ -1,19 +1,20 @@
 import sys
 import random
+import json
 
 D = [
-    { 'header': 'warning', 'class': '어린이보호', 'classNum': 3}, 
-    { 'header': 'danger', 'class': 'Red Light', 'classNum': 2 }, 
-    { 'header': 'danger', 'class': '유턴 금지', 'classNum': 1 }, 
-    { 'header': 'warning', 'class': 'Yello Light', 'classNum': 0 }, 
+    { 'classNum': 3}, 
+    { 'classNum': 2 }, 
+    { 'classNum': 1 }, 
+    { 'classNum': 0 }, 
 ]
 
 def functionTest(img):
     i = random.randrange(0, 101)%10
-    if (i < 4):
-        print (D[i])
-    else:
-        print('')
+    if (i < 2):
+        print (json.dumps(D[i:i+1]))
+    elif(i < 4):
+        print (json.dumps(D[2:4]))
 
 
 if __name__ == '__main__':
