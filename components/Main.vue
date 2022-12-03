@@ -110,6 +110,7 @@ export default {
       interverId: '',
       frame: '',
       sendResult: '',
+      detectResult: '',
       receiveImg: '',
       dangerNumber: 0,
       detectObject: [],
@@ -260,6 +261,7 @@ export default {
       // img.setAttribute('src', frame.dataUri)
       this.frame = frame.dataUri.split(',')[1]
       this.imageToServer()
+      this.imageToDetectObject()
 
       for (const i in this.detectObjectTimeout) {
         if (this.detectObjectTimeout[i] > 0) this.detectObjectTimeout[i] -= 1
@@ -268,6 +270,9 @@ export default {
 
     imageToServer() {
       this.socket.emit('imageToServer')
+    },
+    imageToDetectObject() {
+      this.socket.emit('imageToDetectObject')
     },
   },
 }

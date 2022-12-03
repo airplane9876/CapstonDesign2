@@ -31,16 +31,19 @@ export default function Svc(socket, io) {
             });
 
 
-            // const objectDetect = spawn('python', ['python/b.py']);
-            // objectDetect.stdin.setEncoding('utf-8');
-            // objectDetect.stdout.pipe(process.stdout);
-            // objectDetect.stdin.write(data);
-            // objectDetect.stdin.end();
 
-            // objectDetect.stdout.on('data', result => {
-            //     socket.emit('detectObject', result.toString())
-            // });
 
+        },
+        imageToDetectObject(data) {
+            const objectDetect = spawn('python', ['python/b.py']);
+            objectDetect.stdin.setEncoding('utf-8');
+            objectDetect.stdout.pipe(process.stdout);
+            objectDetect.stdin.write(data);
+            objectDetect.stdin.end();
+
+            objectDetect.stdout.on('data', result => {
+                socket.emit('detectObject', result.toString())
+            });
         },
         echoBack({ evt, data }) {
             socket.emit(evt, data)
