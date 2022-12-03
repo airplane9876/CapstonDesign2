@@ -114,13 +114,45 @@ export default {
       receiveImg: '',
       dangerNumber: 0,
       detectObject: [],
-      detectObjectTimeout: [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+      detectObjectTimeout: [
+        0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+        0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+      ],
       objectList: [],
       allObject: [
-        { header: 'warning', class: '노인보호', classNum: 0 },
-        { header: 'danger', class: '빨간신호등', classNum: 1 },
-        { header: 'danger', class: '30km제한구역', classNum: 2 },
-        { header: 'warning', class: '유턴금지', classNum: 3 },
+        { header: 'danger', class: '노인 보호' },
+        { header: 'warning', class: '비보호 좌회전' },
+        { header: 'warning', class: '서행' },
+        { header: 'danger', class: '100km 제한구역' },
+        { header: 'danger', class: '110km 제한구역' },
+        { header: 'danger', class: '20km 제한구역' },
+        { header: 'danger', class: '30km 제한구역' },
+        { header: 'danger', class: '40km 제한구역' },
+        { header: 'danger', class: '50km 제한구역' },
+        { header: 'danger', class: '60km 제한구역' },
+        { header: 'danger', class: '70km 제한구역' },
+        { header: 'danger', class: '80km 제한구역' },
+        { header: 'danger', class: '90km 제한구역' },
+        { header: 'warning', class: '양보' },
+        { header: 'warning', class: '어린이보호' },
+        { header: 'warning', class: '우측일방통행' },
+        { header: 'warning', class: '우회전금지' },
+        { header: 'warning', class: '유턴금지' },
+        { header: 'warning', class: '일시정지' },
+        { header: 'warning', class: '자전거횡단도' },
+        { header: 'warning', class: '장애인보호' },
+        { header: 'warning', class: '정차 : 주차금지' },
+        { header: 'warning', class: '좌측일방통행' },
+        { header: 'warning', class: '좌회전금지' },
+        { header: 'warning', class: '주차금지' },
+        { header: 'danger', class: '직진금지' },
+        { header: 'warning', class: '직진일방통행' },
+        { header: 'warning', class: '진입금지' },
+        { header: 'danger', class: '통행금지' },
+        { header: 'warning', class: '횡단보도' },
+        { header: 'danger', class: '빨간불' },
+        { header: 'warning', class: '노란불' },
+        { header: 'warning', class: '파란불' },
       ],
     }
   },
@@ -141,54 +173,56 @@ export default {
   watch: {
     detectObject: function (val) {
       val = JSON.parse(val)
+      console.log(val)
       if (val.length > 0) {
         // 이미 인식된 중복 요소 제거
-        val = val.filter((x) => this.detectObjectTimeout[x.classNum] == 0)
+        val = val.filter((x) => this.detectObjectTimeout[x] == 0)
 
         // 현재 인식한 객체 5초간 재인식 금지
         for (const i of val) {
-          this.detectObjectTimeout[i.classNum] = 5 * this.frameRate
+          this.detectObjectTimeout[i] = 5 * this.frameRate
         }
 
         // val을 class가 담긴 객체로 변환
-        val = this.allObject.filter((x) => {
-          for (const i of val) {
-            if (x.classNum == i.classNum) return true
-          }
-          return false
-        })
+        const temp = []
+        for (const i of val) {
+          temp.push(this.allObject[i])
+        }
 
         // 만약 인식목록에 지금 새로 인식한 object가 있다면, 제거
         this.objectList = this.objectList.filter((x) => {
-          for (const i of val) {
-            if (x.classNum == i.classNum) return false
+          for (const i of temp) {
+            if (x.class == i.class) return false
           }
           return true
         })
 
         // 현재 새로 탐지한 val을 화면에 보여줄 objectList에 추가
-        this.objectList.splice(3 - val.length, val.length)
-        this.objectList.splice(0, 0, ...val.slice(0, 3))
+        this.objectList.splice(3 - temp.length, temp.length)
+        this.objectList.splice(0, 0, ...temp.slice(0, 3))
 
         // 새로 인식된 객체들 음성으로 정보 출력
-        for (const i of val.slice(0, 3)) {
-          if (i.header == 'danger' && !this.audio) {
-            if (i.class == '빨간신호등') {
-              this.audio = new Audio(require('../static/sounds/test.mp3'))
-              this.audio.play()
-              this.audio.addEventListener('ended', () => (this.audio = null))
-            } else {
-              this.audio = new Audio(require('../static/sounds/test2.mp3'))
-              this.audio.play()
-              this.audio.addEventListener('ended', () => (this.audio = null))
-            }
-          }
-        }
+        // for (const i of val.slice(0, 3)) {
+        //   if (i.header == 'danger' && !this.audio) {
+        //     if (i.class == '빨간신호등') {
+        //       this.audio = new Audio(require('../static/sounds/test.mp3'))
+        //       this.audio.play()
+        //       this.audio.addEventListener('ended', () => (this.audio = null))
+        //     } else {
+        //       this.audio = new Audio(require('../static/sounds/test2.mp3'))
+        //       this.audio.play()
+        //       this.audio.addEventListener('ended', () => (this.audio = null))
+        //     }
+        //   }
+        // }
       }
     },
     audio: function (val) {
       console.log(val)
     },
+    // dangerNumber: function (val) {
+    //   console.log('dangerNumber : ', val)
+    // },
   },
 
   mounted() {
@@ -255,7 +289,7 @@ export default {
     },
 
     async sendImage() {
-      console.log(this.cnt++)
+      // console.log(this.cnt++)
       const frame = captureVideoFrame('myvideo', 'png')
       // const img = document.getElementById('my-screenshot')
       // img.setAttribute('src', frame.dataUri)
