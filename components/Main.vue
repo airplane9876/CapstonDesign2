@@ -98,9 +98,11 @@ export default {
   name: 'NuxtTutorial',
   data() {
     return {
+      cnt: 0,
+
       audio: null,
       audioPlayTime: 0,
-      frameRate: 0.5, // 전송할 프레임
+      frameRate: 1, // 전송할 프레임
       isCameraOpen: false,
       isCaptureStart: false,
       isLoading: false,
@@ -252,11 +254,11 @@ export default {
     },
 
     async sendImage() {
+      console.log(this.cnt++)
       const frame = captureVideoFrame('myvideo', 'png')
       // const img = document.getElementById('my-screenshot')
       // img.setAttribute('src', frame.dataUri)
       this.frame = frame.dataUri.split(',')[1]
-      console.log(this.frame)
       this.imageToServer()
 
       for (const i in this.detectObjectTimeout) {
