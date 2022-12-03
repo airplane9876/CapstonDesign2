@@ -7,12 +7,15 @@ danger.stdin.setEncoding('utf-8');
 // danger.stdout.pipe(process.stdout);
 
 
+const objectDetect = spawn('python', ['python/b.py']);
+objectDetect.stdin.setEncoding('utf-8');
+objectDetect.stdout.pipe(process.stdout);
+
 export default function Svc(socket, io) {
+
     danger.stdout.on('data', result => {
         for (const i of result.toString().split('\r')) {
-            // console.log(Number(i))
             if (Number(i) > 0) {
-                // console.log(Number(i))
                 socket.emit('dangerNumber', Number(i) * 100)
             }
         }
@@ -20,24 +23,17 @@ export default function Svc(socket, io) {
     danger.stderr.on('data', function (result) {
         console.log(result.toString());
     });
+
+    objectDetect.stdout.on('data', result => {
+        socket.emit('detectObject', result.toString())
+    });
     return Object.freeze({
         imageToServer(data) {
-            // 모델로 쏘고
-            // 결과 받아서
-            // console.log(data.slice(10, 20))
-
             danger.stdin.write(`${data}\n`);
         },
         imageToDetectObject(data) {
-            const objectDetect = spawn('python', ['python/b.py']);
-            objectDetect.stdin.setEncoding('utf-8');
-            // objectDetect.stdout.pipe(process.stdout);
-            objectDetect.stdin.write(data);
-            objectDetect.stdin.end();
-
-            objectDetect.stdout.on('data', result => {
-                socket.emit('detectObject', result.toString())
-            });
+            console.log('here?')
+            objectDetect.stdin.write(`${data}\n`);
         },
         echoBack({ evt, data }) {
             socket.emit(evt, data)
