@@ -99,10 +99,9 @@ export default {
   data() {
     return {
       cnt: 0,
-
       audio: null,
       audioPlayTime: 0,
-      frameRate: 1, // 전송할 프레임
+      frameRate: 5, // 전송할 프레임
       isCameraOpen: false,
       isCaptureStart: false,
       isLoading: false,
@@ -120,21 +119,21 @@ export default {
       ],
       objectList: [],
       allObject: [
-        { header: 'danger', class: '노인 보호' },
+        { header: 'danger', class: '노인 보호구역' },
         { header: 'warning', class: '비보호 좌회전' },
         { header: 'warning', class: '서행' },
-        { header: 'danger', class: '100km 제한구역' },
-        { header: 'danger', class: '110km 제한구역' },
-        { header: 'danger', class: '20km 제한구역' },
-        { header: 'danger', class: '30km 제한구역' },
-        { header: 'danger', class: '40km 제한구역' },
-        { header: 'danger', class: '50km 제한구역' },
-        { header: 'danger', class: '60km 제한구역' },
-        { header: 'danger', class: '70km 제한구역' },
-        { header: 'danger', class: '80km 제한구역' },
-        { header: 'danger', class: '90km 제한구역' },
+        { header: 'danger', class: '제한속도100km' },
+        { header: 'danger', class: '제한속도110km' },
+        { header: 'danger', class: '제한속도20km' },
+        { header: 'danger', class: '제한속도30km' },
+        { header: 'danger', class: '제한속도40km' },
+        { header: 'danger', class: '제한속도50km' },
+        { header: 'danger', class: '제한속도60km' },
+        { header: 'danger', class: '제한속도70km' },
+        { header: 'danger', class: '제한속도80km' },
+        { header: 'danger', class: '제한속도90km' },
         { header: 'warning', class: '양보' },
-        { header: 'warning', class: '어린이보호' },
+        { header: 'danger', class: '어린이 보호구역' },
         { header: 'warning', class: '우측일방통행' },
         { header: 'warning', class: '우회전금지' },
         { header: 'warning', class: '유턴금지' },
@@ -173,7 +172,6 @@ export default {
   watch: {
     detectObject: function (val) {
       val = JSON.parse(val)
-      console.log(val)
       if (val.length > 0) {
         // 이미 인식된 중복 요소 제거
         val = val.filter((x) => this.detectObjectTimeout[x] == 0)
@@ -202,27 +200,18 @@ export default {
         this.objectList.splice(0, 0, ...temp.slice(0, 3))
 
         // 새로 인식된 객체들 음성으로 정보 출력
-        // for (const i of val.slice(0, 3)) {
-        //   if (i.header == 'danger' && !this.audio) {
-        //     if (i.class == '빨간신호등') {
-        //       this.audio = new Audio(require('../static/sounds/test.mp3'))
-        //       this.audio.play()
-        //       this.audio.addEventListener('ended', () => (this.audio = null))
-        //     } else {
-        //       this.audio = new Audio(require('../static/sounds/test2.mp3'))
-        //       this.audio.play()
-        //       this.audio.addEventListener('ended', () => (this.audio = null))
-        //     }
-        //   }
-        // }
+        for (const i of temp.slice(0, 3)) {
+          if (i.header == 'danger' && !this.audio) {
+            this.audio = new Audio(require(`../static/sounds/${i.class}.mp3`))
+            this.audio.play()
+            this.audio.addEventListener('ended', () => (this.audio = null))
+          }
+        }
       }
     },
     audio: function (val) {
       console.log(val)
     },
-    // dangerNumber: function (val) {
-    //   console.log('dangerNumber : ', val)
-    // },
   },
 
   mounted() {
