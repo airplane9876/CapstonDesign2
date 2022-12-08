@@ -1,9 +1,21 @@
 # ssd2
 
 ## Before Setup
+<<<<<<< HEAD
+install node v14
+install python
+install pm2
+
+```bash
+pip install opencv-python 4.5.5.64
+pip install tensorflow keras pandas timm seaborn matplotlib numpy Pillow PyYAML requests scipy torch torchvision tqdm
+
+```
+=======
 install node v16
 install python
 install keras
+>>>>>>> origin/master
 
 ## Build Setup
 

@@ -26,8 +26,13 @@
         <video
           id="myvideo"
           ref="camera"
+<<<<<<< HEAD
+          :width="400"
+          :height="300"
+=======
           :width="256"
           :height="187"
+>>>>>>> origin/master
           autoplay
         ></video>
       </div>
@@ -71,6 +76,19 @@
           ></b-progress>
         </div>
       </div>
+<<<<<<< HEAD
+      <div>
+        <b-form-checkbox-group
+          v-model="selected"
+          :options="options"
+          class="mb-3"
+          value-field="item"
+          text-field="name"
+          disabled-field="notEnabled"
+        ></b-form-checkbox-group>
+      </div>
+=======
+>>>>>>> origin/master
       <div class="object-detect">
         <transition-group class="object-detect" name="list">
           <b-card
@@ -92,12 +110,26 @@
 </template>
 
 <script>
+<<<<<<< HEAD
+import captureVideoFrame from "capture-video-frame";
+
+export default {
+  name: "NuxtTutorial",
+  data() {
+    return {
+      selected: ["D", "O"],
+      options: [
+        { item: "D", name: "Danger" },
+        { item: "O", name: "Object" },
+      ],
+=======
 import captureVideoFrame from 'capture-video-frame'
 
 export default {
   name: 'NuxtTutorial',
   data() {
     return {
+>>>>>>> origin/master
       cnt: 0,
       audio: null,
       audioPlayTime: 0,
@@ -105,6 +137,16 @@ export default {
       isCameraOpen: false,
       isCaptureStart: false,
       isLoading: false,
+<<<<<<< HEAD
+      link: "#",
+      interverId: "",
+      frame: "",
+      sendResult: "",
+      detectResult: "",
+      receiveImg: "",
+      dangerNumber: 0,
+      detectObject: null,
+=======
       link: '#',
       interverId: '',
       frame: '',
@@ -113,12 +155,50 @@ export default {
       receiveImg: '',
       dangerNumber: 0,
       detectObject: [],
+>>>>>>> origin/master
       detectObjectTimeout: [
         0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
         0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
       ],
       objectList: [],
       allObject: [
+<<<<<<< HEAD
+        { header: "danger", class: "노인 보호구역" },
+        { header: "warning", class: "비보호 좌회전" },
+        { header: "warning", class: "서행" },
+        { header: "danger", class: "제한속도100km" },
+        { header: "danger", class: "제한속도110km" },
+        { header: "danger", class: "제한속도20km" },
+        { header: "danger", class: "제한속도30km" },
+        { header: "danger", class: "제한속도40km" },
+        { header: "danger", class: "제한속도50km" },
+        { header: "danger", class: "제한속도60km" },
+        { header: "danger", class: "제한속도70km" },
+        { header: "danger", class: "제한속도80km" },
+        { header: "danger", class: "제한속도90km" },
+        { header: "warning", class: "양보" },
+        { header: "danger", class: "어린이 보호구역" },
+        { header: "warning", class: "우측일방통행" },
+        { header: "warning", class: "우회전금지" },
+        { header: "warning", class: "유턴금지" },
+        { header: "warning", class: "일시정지" },
+        { header: "warning", class: "자전거횡단도" },
+        { header: "warning", class: "장애인보호" },
+        { header: "warning", class: "정차 : 주차금지" },
+        { header: "warning", class: "좌측일방통행" },
+        { header: "warning", class: "좌회전금지" },
+        { header: "warning", class: "주차금지" },
+        { header: "danger", class: "직진금지" },
+        { header: "warning", class: "직진일방통행" },
+        { header: "warning", class: "진입금지" },
+        { header: "danger", class: "통행금지" },
+        { header: "warning", class: "횡단보도" },
+        { header: "danger", class: "빨간불" },
+        { header: "warning", class: "노란불" },
+        { header: "warning", class: "파란불" },
+      ],
+    };
+=======
         { header: 'danger', class: '노인 보호구역' },
         { header: 'warning', class: '비보호 좌회전' },
         { header: 'warning', class: '서행' },
@@ -154,10 +234,21 @@ export default {
         { header: 'warning', class: '파란불' },
       ],
     }
+>>>>>>> origin/master
   },
 
   computed: {
     dangerNumberClass() {
+<<<<<<< HEAD
+      if (this.dangerNumber < 50) return "black";
+      if (this.dangerNumber < 80) return "orangered";
+      return "red";
+    },
+    variant() {
+      if (this.dangerNumber < 50) return "success";
+      if (this.dangerNumber < 80) return "warning";
+      return "danger";
+=======
       if (this.dangerNumber < 50) return 'black'
       if (this.dangerNumber < 80) return 'orangered'
       return 'red'
@@ -166,11 +257,28 @@ export default {
       if (this.dangerNumber < 50) return 'success'
       if (this.dangerNumber < 80) return 'warning'
       return 'danger'
+>>>>>>> origin/master
     },
   },
 
   watch: {
     detectObject: function (val) {
+<<<<<<< HEAD
+      val = JSON.parse(val);
+      if (val.length > 0) {
+        // 이미 인식된 중복 요소 제거
+        val = val.filter((x) => this.detectObjectTimeout[x] == 0);
+
+        // 현재 인식한 객체 5초간 재인식 금지
+        for (const i of val) {
+          this.detectObjectTimeout[i] = 5 * this.frameRate;
+        }
+
+        // val을 class가 담긴 객체로 변환
+        const temp = [];
+        for (const i of val) {
+          temp.push(this.allObject[i]);
+=======
       val = JSON.parse(val)
       if (val.length > 0) {
         // 이미 인식된 중복 요소 제거
@@ -185,11 +293,29 @@ export default {
         const temp = []
         for (const i of val) {
           temp.push(this.allObject[i])
+>>>>>>> origin/master
         }
 
         // 만약 인식목록에 지금 새로 인식한 object가 있다면, 제거
         this.objectList = this.objectList.filter((x) => {
           for (const i of temp) {
+<<<<<<< HEAD
+            if (x.class == i.class) return false;
+          }
+          return true;
+        });
+
+        // 현재 새로 탐지한 val을 화면에 보여줄 objectList에 추가
+        this.objectList.splice(3 - temp.length, temp.length);
+        this.objectList.splice(0, 0, ...temp.slice(0, 3));
+
+        // 새로 인식된 객체들 음성으로 정보 출력
+        for (const i of temp.slice(0, 3)) {
+          if (i.header == "danger" && !this.audio) {
+            this.audio = new Audio(require(`../static/sounds/${i.class}.mp3`));
+            this.audio.play();
+            this.audio.addEventListener("ended", () => (this.audio = null));
+=======
             if (x.class == i.class) return false
           }
           return true
@@ -205,20 +331,49 @@ export default {
             this.audio = new Audio(require(`../static/sounds/${i.class}.mp3`))
             this.audio.play()
             this.audio.addEventListener('ended', () => (this.audio = null))
+>>>>>>> origin/master
           }
         }
       }
     },
     audio: function (val) {
+<<<<<<< HEAD
+      console.log(val);
+=======
       console.log(val)
+>>>>>>> origin/master
     },
   },
 
   mounted() {
     this.socket = this.$nuxtSocket({
+<<<<<<< HEAD
+      channel: "/image",
+      reconnection: false,
+    });
+
+    this.audio = null;
+    this.audioPlayTime = 0;
+    this.frameRate = 5; // 전송할 프레임
+    this.isCameraOpen = false;
+    this.isCaptureStart = false;
+    this.isLoading = false;
+    this.link = "#";
+    this.interverId = "";
+    this.frame = "";
+    this.sendResult = "";
+    this.detectResult = "";
+    this.receiveImg = "";
+    this.dangerNumber = 0;
+    this.detectObjectTimeout = [
+      0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+      0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+    ];
+=======
       channel: '/image',
       reconnection: false,
     })
+>>>>>>> origin/master
   },
 
   methods: {
@@ -229,26 +384,60 @@ export default {
 
       // console.log(this.$store.state.chatMessages) // -> 1
       if (this.isCameraOpen) {
+<<<<<<< HEAD
+        this.isCameraOpen = false;
+        this.isCaptureStart = false;
+        this.stopCameraStream();
+      } else {
+        this.isCameraOpen = true;
+        this.createCameraElement();
+=======
         this.isCameraOpen = false
         this.isCaptureStart = false
         this.stopCameraStream()
       } else {
         this.isCameraOpen = true
         this.createCameraElement()
+>>>>>>> origin/master
       }
     },
 
     createCameraElement() {
+<<<<<<< HEAD
+      this.isLoading = true;
+=======
       this.isLoading = true
+>>>>>>> origin/master
 
       const constraints = (window.constraints = {
         audio: false,
         video: true,
+<<<<<<< HEAD
+      });
+=======
       })
+>>>>>>> origin/master
 
       navigator.mediaDevices
         .getUserMedia(constraints)
         .then((stream) => {
+<<<<<<< HEAD
+          this.isLoading = false;
+          this.$refs.camera.srcObject = stream;
+        })
+        .catch((error) => {
+          this.isLoading = false;
+          alert("May the browser didn't support or there is some errors.");
+        });
+    },
+
+    stopCameraStream() {
+      let tracks = this.$refs.camera.srcObject.getTracks();
+
+      tracks.forEach((track) => {
+        track.stop();
+      });
+=======
           this.isLoading = false
           this.$refs.camera.srcObject = stream
         })
@@ -264,10 +453,20 @@ export default {
       tracks.forEach((track) => {
         track.stop()
       })
+>>>>>>> origin/master
     },
 
     captureImage() {
       if (this.isCaptureStart == false) {
+<<<<<<< HEAD
+        console.log("setInterval start");
+        const setInterval = window.setInterval;
+        this.interverId = setInterval(this.sendImage, 1000 / this.frameRate);
+      } else {
+        clearInterval(this.interverId);
+      }
+      this.isCaptureStart = !this.isCaptureStart;
+=======
         console.log('setInterval start')
         const setInterval = window.setInterval
         this.interverId = setInterval(this.sendImage, 1000 / this.frameRate)
@@ -275,10 +474,23 @@ export default {
         clearInterval(this.interverId)
       }
       this.isCaptureStart = !this.isCaptureStart
+>>>>>>> origin/master
     },
 
     async sendImage() {
       // console.log(this.cnt++)
+<<<<<<< HEAD
+      const frame = captureVideoFrame("myvideo", "png");
+      // const img = document.getElementById('my-screenshot')
+      // img.setAttribute('src', frame.dataUri)
+      this.frame = frame.dataUri.split(",")[1];
+
+      if (this.selected.includes("D")) this.imageToServer();
+      if (this.selected.includes("O")) this.imageToDetectObject();
+
+      for (const i in this.detectObjectTimeout) {
+        if (this.detectObjectTimeout[i] > 0) this.detectObjectTimeout[i] -= 1;
+=======
       const frame = captureVideoFrame('myvideo', 'png')
       // const img = document.getElementById('my-screenshot')
       // img.setAttribute('src', frame.dataUri)
@@ -288,10 +500,20 @@ export default {
 
       for (const i in this.detectObjectTimeout) {
         if (this.detectObjectTimeout[i] > 0) this.detectObjectTimeout[i] -= 1
+>>>>>>> origin/master
       }
     },
 
     imageToServer() {
+<<<<<<< HEAD
+      this.socket.emit("imageToServer");
+    },
+    imageToDetectObject() {
+      this.socket.emit("imageToDetectObject");
+    },
+  },
+};
+=======
       this.socket.emit('imageToServer')
     },
     imageToDetectObject() {
@@ -299,6 +521,7 @@ export default {
     },
   },
 }
+>>>>>>> origin/master
 </script>
 
 <style>
