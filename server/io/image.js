@@ -6,13 +6,8 @@ const danger = spawn('python', ["-u", 'python/capdi.py']);
 danger.stdin.setEncoding('utf-8');
 // danger.stdout.pipe(process.stdout);
 
-<<<<<<< HEAD
 // const objectDetect = spawn('python', ['python/b.py']);
 const objectDetect = spawn('python', ['Yolov5-master/detect.py']);
-=======
-
-const objectDetect = spawn('python', ['python/b.py']);
->>>>>>> origin/master
 objectDetect.stdin.setEncoding('utf-8');
 objectDetect.stdout.pipe(process.stdout);
 
@@ -21,11 +16,7 @@ export default function Svc(socket, io) {
     danger.stdout.on('data', result => {
         for (const i of result.toString().split('\r')) {
             if (Number(i) > 0) {
-<<<<<<< HEAD
                 socket.emit('dangerNumber', Number(i))
-=======
-                socket.emit('dangerNumber', Number(i) * 100)
->>>>>>> origin/master
             }
         }
     });
@@ -41,10 +32,6 @@ export default function Svc(socket, io) {
             danger.stdin.write(`${data}\n`);
         },
         imageToDetectObject(data) {
-<<<<<<< HEAD
-=======
-            console.log('here?')
->>>>>>> origin/master
             objectDetect.stdin.write(`${data}\n`);
         },
         echoBack({ evt, data }) {
