@@ -1,10 +1,13 @@
 # Created by .ignore support plugin (hsz.mobi)
+<<<<<<< HEAD
 
 *.pt
 *.h5
 Yolov5-master/
 KoreanTrafficsignClassifier/
 
+=======
+>>>>>>> origin/master
 ### Node template
 # Logs
 /logs
