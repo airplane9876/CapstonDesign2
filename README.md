@@ -1,9 +1,9 @@
 # ssd2
 
 ## Before Setup
-install node v14
-install python
-install pm2
+install node v14  
+install python  
+install pm2  
 
 ```bash
 pip install opencv-python 4.5.5.64
