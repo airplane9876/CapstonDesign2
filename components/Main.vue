@@ -189,7 +189,6 @@ export default {
       
       val = Number(val)
       if (Number.isNaN(val)) return;
-      console.log(val)
       
       // 이미 인식된 중복 요소 제거
       // val = val.filter((x) => this.detectObjectTimeout[x] == 0);
