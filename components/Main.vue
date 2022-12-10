@@ -136,14 +136,6 @@ export default {
       allObject: [
         { header: "danger", class: "노인 보호구역" },
         { header: "warning", class: "비보호 좌회전" },
-        { header: "warning", class: "서행" },
-        { header: "danger", class: "제한속도100km" },
-        { header: "danger", class: "제한속도110km" },
-        { header: "danger", class: "제한속도20km" },
-        { header: "danger", class: "제한속도30km" },
-        { header: "danger", class: "제한속도40km" },
-        { header: "danger", class: "제한속도50km" },
-        { header: "danger", class: "제한속도60km" },
         { header: "danger", class: "제한속도70km" },
         { header: "danger", class: "제한속도80km" },
         { header: "danger", class: "제한속도90km" },
@@ -154,6 +146,7 @@ export default {
         { header: "warning", class: "유턴금지" },
         { header: "warning", class: "일시정지" },
         { header: "warning", class: "자전거횡단도" },
+        { header: "warning", class: "서행" },
         { header: "warning", class: "장애인보호" },
         { header: "warning", class: "정차 : 주차금지" },
         { header: "warning", class: "좌측일방통행" },
@@ -164,6 +157,13 @@ export default {
         { header: "warning", class: "진입금지" },
         { header: "danger", class: "통행금지" },
         { header: "warning", class: "횡단보도" },
+        { header: "danger", class: "제한속도100km" },
+        { header: "danger", class: "제한속도110km" },
+        { header: "danger", class: "제한속도20km" },
+        { header: "danger", class: "제한속도30km" },
+        { header: "danger", class: "제한속도40km" },
+        { header: "danger", class: "제한속도50km" },
+        { header: "danger", class: "제한속도60km" },
         { header: "danger", class: "빨간불" },
         { header: "warning", class: "노란불" },
         { header: "warning", class: "파란불" },
@@ -188,12 +188,18 @@ export default {
     detectObject: function (val) {
       
       val = Number(val)
+      console.log(val)
       if (Number.isNaN(val)) return;
-      
+
+
       // 이미 인식된 중복 요소 제거
       // val = val.filter((x) => this.detectObjectTimeout[x] == 0);
-      if (this.detectObjectTimeout[val]) return;
+      if (this.detectObjectTimeout[val]) { 
+        this.detectObjectTimeout[val] = 5 * this.frameRate;        
+        return;
+      }
 
+      
       // 현재 인식한 객체 5초간 재인식 금지
       // for (const i of val) {
       //   this.detectObjectTimeout[i] = 5 * this.frameRate;
