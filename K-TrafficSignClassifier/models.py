@@ -17,11 +17,11 @@ class ImageModel(nn.Module):
             modules.append(module)
         #pdb.set_trace()
         self.fc_in_features = self.encoder.num_features
-        print(f'The layer was modified...')
+        # print(f'The layer was modified...')
 
         fc_name = names[-1].split('.')
-        print(
-            f'{getattr(self.encoder, fc_name[0])} -> Linear(in_features={self.fc_in_features}, out_features={class_n}, bias=True)')
+        # print(
+        #     f'{getattr(self.encoder, fc_name[0])} -> Linear(in_features={self.fc_in_features}, out_features={class_n}, bias=True)')
         setattr(self.encoder, fc_name[0], nn.Linear(self.fc_in_features, class_n))
         #pdb.set_trace()
 

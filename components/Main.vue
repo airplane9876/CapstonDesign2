@@ -186,41 +186,46 @@ export default {
 
   watch: {
     detectObject: function (val) {
-      val = JSON.parse(val);
-      if (val.length > 0) {
-        // 이미 인식된 중복 요소 제거
-        val = val.filter((x) => this.detectObjectTimeout[x] == 0);
+      
+      val = Number(val)
+      if (Number.isNaN(val)) return;
+      console.log(val)
+      
+      // 이미 인식된 중복 요소 제거
+      // val = val.filter((x) => this.detectObjectTimeout[x] == 0);
+      if (this.detectObjectTimeout[val]) return;
 
-        // 현재 인식한 객체 5초간 재인식 금지
-        for (const i of val) {
-          this.detectObjectTimeout[i] = 5 * this.frameRate;
+      // 현재 인식한 객체 5초간 재인식 금지
+      // for (const i of val) {
+      //   this.detectObjectTimeout[i] = 5 * this.frameRate;
+      // }
+      this.detectObjectTimeout[val] = 5 * this.frameRate;
+
+      // val을 class가 담긴 객체로 변환
+      const temp = [];
+      // for (const i of val) {
+      //   temp.push(this.allObject[i]);
+      // }
+      temp.push(this.allObject[val])
+
+      // 만약 인식목록에 지금 새로 인식한 object가 있다면, 제거
+      this.objectList = this.objectList.filter((x) => {
+        for (const i of temp) {
+          if (x.class == i.class) return false;
         }
+        return true;
+      });
 
-        // val을 class가 담긴 객체로 변환
-        const temp = [];
-        for (const i of val) {
-          temp.push(this.allObject[i]);
-        }
+      // 현재 새로 탐지한 val을 화면에 보여줄 objectList에 추가
+      this.objectList.splice(3 - temp.length, temp.length);
+      this.objectList.splice(0, 0, ...temp.slice(0, 3));
 
-        // 만약 인식목록에 지금 새로 인식한 object가 있다면, 제거
-        this.objectList = this.objectList.filter((x) => {
-          for (const i of temp) {
-            if (x.class == i.class) return false;
-          }
-          return true;
-        });
-
-        // 현재 새로 탐지한 val을 화면에 보여줄 objectList에 추가
-        this.objectList.splice(3 - temp.length, temp.length);
-        this.objectList.splice(0, 0, ...temp.slice(0, 3));
-
-        // 새로 인식된 객체들 음성으로 정보 출력
-        for (const i of temp.slice(0, 3)) {
-          if (i.header == "danger" && !this.audio) {
-            this.audio = new Audio(require(`../static/sounds/${i.class}.mp3`));
-            this.audio.play();
-            this.audio.addEventListener("ended", () => (this.audio = null));
-          }
+      // 새로 인식된 객체들 음성으로 정보 출력
+      for (const i of temp.slice(0, 3)) {
+        if (i.header == "danger" && !this.audio) {
+          this.audio = new Audio(require(`../static/sounds/${i.class}.mp3`));
+          this.audio.play();
+          this.audio.addEventListener("ended", () => (this.audio = null));
         }
       }
     },

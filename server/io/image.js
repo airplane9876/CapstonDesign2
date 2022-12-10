@@ -9,7 +9,7 @@ danger.stdin.setEncoding('utf-8');
 // const objectDetect = spawn('python', ['python/b.py']);
 const objectDetect = spawn('python', ['Yolov5-master/detect.py']);
 objectDetect.stdin.setEncoding('utf-8');
-objectDetect.stdout.pipe(process.stdout);
+// objectDetect.stdout.pipe(process.stdout);
 
 export default function Svc(socket, io) {
 
@@ -25,6 +25,7 @@ export default function Svc(socket, io) {
     });
 
     objectDetect.stdout.on('data', result => {
+        console.log('data : ', result.toString())
         socket.emit('detectObject', result.toString())
     });
     return Object.freeze({
