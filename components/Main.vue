@@ -173,12 +173,12 @@ export default {
 
   computed: {
     dangerNumberClass() {
-      if (this.dangerNumber < 50) return "black";
+      if (this.dangerNumber < 40) return "black";
       if (this.dangerNumber < 80) return "orangered";
       return "red";
     },
     variant() {
-      if (this.dangerNumber < 50) return "success";
+      if (this.dangerNumber < 40) return "success";
       if (this.dangerNumber < 80) return "warning";
       return "danger";
     },

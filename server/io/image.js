@@ -25,7 +25,6 @@ export default function Svc(socket, io) {
     });
 
     objectDetect.stdout.on('data', result => {
-        console.log('data : ', result.toString())
         socket.emit('detectObject', result.toString())
     });
     return Object.freeze({
