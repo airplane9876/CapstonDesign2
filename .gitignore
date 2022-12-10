@@ -1,5 +1,6 @@
 # Created by .ignore support plugin (hsz.mobi)
 
+*.zip
 *.pt
 *.h5
 Yolov5-master/
