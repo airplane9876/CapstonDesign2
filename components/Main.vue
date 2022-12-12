@@ -190,12 +190,12 @@ export default {
       val = Number(val)
       console.log(val)
       if (Number.isNaN(val)) return;
-
+      // console.log('재인식까지 남은시간 : ', this.detectObjectTimeout[val])
 
       // 이미 인식된 중복 요소 제거
       // val = val.filter((x) => this.detectObjectTimeout[x] == 0);
       if (this.detectObjectTimeout[val]) { 
-        this.detectObjectTimeout[val] = 5 * this.frameRate;        
+        this.detectObjectTimeout[val] = 10 * this.frameRate;        
         return;
       }
 
@@ -204,7 +204,7 @@ export default {
       // for (const i of val) {
       //   this.detectObjectTimeout[i] = 5 * this.frameRate;
       // }
-      this.detectObjectTimeout[val] = 5 * this.frameRate;
+      this.detectObjectTimeout[val] = 10 * this.frameRate;
 
       // val을 class가 담긴 객체로 변환
       const temp = [];
